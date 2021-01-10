@@ -1,11 +1,17 @@
-application: userloginlogoutdatastore
-runtime: python27
-api_version: 1
-threadsafe: true
+runtime:      python27
+api_version:  1
+threadsafe:   true
+
 libraries:
-- name: jinja2
-  version: "2.6"
+- name:       jinja2
+  version:    latest
 
 handlers:
-- url: /.*
-  script: main.app
+- url:        /stylesheets
+  static_dir: stylesheets
+
+- url:        /scripts
+  static_dir: scripts
+
+- url:        /.*
+  script:     main.app

@@ -1,69 +1,72 @@
 import webapp2
-import jinja2
-from google.appengine.api import users
-from google.appengine.ext import ndb
-import os
-
-from myuser import MyUser
-from directory import Directory
-
-
-JINJA_ENVIRONMENT = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
-    extensions=['jinja2.ext.autoescape'],
-    autoescape=True
-)
+import logging
+import renderhtml
+import helper
 
 class MainPage(webapp2.RequestHandler):
+    # GET-request
     def get(self):
+        logging.debug('GET')
         self.response.headers['Content-Type'] = 'text/html'
-        url = ''
-        url_string = ''
-        welcome = 'Welcome back'
-        user = users.get_current_user()
-        if user:
-            url = users.create_logout_url('/')
-            url_string = 'logout'
-            myuser_key = ndb.Key('MyUser', user.user_id())
-            myuser = myuser_key.get()
 
-            #First Time Login
-            if myuser == None:
-                welcome = 'Welcome to the application'
-                myuser = MyUser(id=user.user_id())
-
-                #Create Root Directory of the user
-                directory_id = myuser.key.id() + '/'
-                directory = Directory(id=directory_id)
-
-                directory.parent_directory = None
-                directory.name = 'root'
-                directory.path = '/'
-                directory.put()
-
-                myuser.root_directory = directory.key
-                myuser.put()
-
-                # set current path on first login to root directory
-                myuser.current_directory = ndb.Key(Directory, myuser.key.id() + '/')
-
-                myuser.put()
+        # check whether user is logged in
+        if helper.is_user_logged_in():
+            # if myuser object is None --> No user with key found --> new user --> make new user in datastore
+            if not helper.user_exists():
+                helper.add_new_user(helper.get_user())
 
 
+            # get all directoriesin the current path
+            directories_in_current_path = helper.get_directories_in_current_path()
+
+            # extract directory names from the key list for showing only the names to display
+            directories_in_current_path = helper.get_names_from_list(directories_in_current_path)
+
+
+            renderhtml.render_main(self,
+                                 helper.get_logout_url(self),
+                                 directories_in_current_path,
+                                 helper.get_current_directory_object().path,
+                                 helper.is_in_root_directory())
+
+        # no login
         else:
-            url = users.create_login_url('/')
-            url_string = 'login'
+            renderhtml.render_login(self, helper.get_login_url(self))
 
-        template_values = {
-            'url' : url,
-            'url_string' : url_string,
-            'user' : user,
-            'welcome' : welcome
-        }
-        template = JINJA_ENVIRONMENT.get_template('main.html')
-        self.response.write(template.render(template_values))
+    # POST-request
+    def post(self):
+        logging.debug('POST')
+        self.response.headers['Content-Type'] = 'text/html'
 
-# starts the web application we specify the full routing table here as well
-app = webapp2.WSGIApplication([
-('/', MainPage),
-], debug=True)
+        button_value = self.request.get('button')
+
+        if button_value == 'Add':
+            self.add()
+            self.redirect('/')
+
+        elif button_value == 'Delete':
+            self.delete()
+            self.redirect('/')
+
+
+    def add(self):
+        directory_name = self.request.get('value')
+        directory_name = helper.prepare_directory_name(directory_name)
+        if not (directory_name is None or directory_name == ''):
+            helper.add_directory(directory_name, helper.get_current_directory_key())
+
+    def delete(self):
+        name = self.request.get('name')
+        kind = self.request.get('kind')
+
+        if kind == 'directory':
+            helper.delete_directory(name)
+
+
+
+
+# starts the web application and specifies the routing table
+app = webapp2.WSGIApplication(
+    [
+        ('/', MainPage)
+    ], debug=True)
