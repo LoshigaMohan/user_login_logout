@@ -1,7 +1,9 @@
 from google.appengine.ext import ndb
 from google.appengine.api import users
+from google.appengine.ext import blobstore
 from myuser import MyUser
 from directory import Directory
+from file import File
 import logging
 import re
 
@@ -56,7 +58,7 @@ def is_in_root_directory():
 
 
 def is_directory_empty(directory):
-    return not directory.directories
+    return not directory.files and not directory.directories
 
 
 # returns key of current directory
@@ -192,3 +194,59 @@ def navigate_to_directory(directory_name):
 
     my_user.current_directory = directory_key
     my_user.put()
+
+
+
+
+
+
+def get_files_in_current_path():
+    return get_current_directory_object().files
+
+
+def get_file_object(file_name):
+    my_user = get_my_user()
+
+    parent_directory_object = get_current_directory_object()
+    file_path = get_path(file_name, parent_directory_object)
+    file_id = my_user.key.id() + file_path
+    file_key = ndb.Key(File, file_id)
+    return file_key.get()
+
+def add_file(upload, file_name):
+    my_user = get_my_user()
+    current_directory_object = get_current_directory_object()
+    file_id = my_user.key.id() + get_path(file_name, current_directory_object)
+    file_key = ndb.Key(File, file_id)
+
+    if exists(file_key, current_directory_object.files):
+        file_object = File(id=file_id)
+        file_object.name = file_name
+        file_object.blob = upload.key()
+        file_object.put()
+
+        current_directory_object.files.append(file_key)
+        current_directory_object.put()
+
+    else:
+        # Delete uploaded file from the blobstore
+        blobstore.delete(upload.key())
+        logging.debug("A file with this name already exists in this directory!")
+
+def delete_file(file_name):
+    my_user = get_my_user()
+
+    parent_directory_object = get_current_directory_object()
+    file_path = get_path(file_name, parent_directory_object)
+    file_id = my_user.key.id() + file_path
+    file_key = ndb.Key(File, file_id)
+
+    # Delete file key from directory
+    parent_directory_object.files.remove(file_key)
+    parent_directory_object.put()
+
+    # Delete actual file from blobstore
+    blobstore.delete(file_key.get().blob)
+
+    # Delete file object
+    file_key.delete()

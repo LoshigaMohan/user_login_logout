@@ -3,6 +3,11 @@ import logging
 import renderhtml
 import helper
 
+from uploader import Uploader
+from downloader import Downloader
+from google.appengine.ext import blobstore
+
+
 class MainPage(webapp2.RequestHandler):
     # GET-request
     def get(self):
@@ -18,16 +23,18 @@ class MainPage(webapp2.RequestHandler):
             self.navigate()
             # get all directoriesin the current path
             directories_in_current_path = helper.get_directories_in_current_path()
-
+            files_in_current_path = helper.get_files_in_current_path()
             # extract directory names from the key list for showing only the names to display
             directories_in_current_path = helper.get_names_from_list(directories_in_current_path)
-
+            files_in_current_path = helper.get_names_from_list(files_in_current_path)
 
             renderhtml.render_main(self,
-                                 helper.get_logout_url(self),
-                                 directories_in_current_path,
-                                 helper.get_current_directory_object().path,
-                                 helper.is_in_root_directory())
+                                    helper.get_logout_url(self),
+                                    directories_in_current_path,
+                                    files_in_current_path,
+                                    helper.get_current_directory_object().path,
+                                    helper.is_in_root_directory(),
+                                    blobstore.create_upload_url('/upload'))
 
         # no login
         else:
@@ -66,9 +73,10 @@ class MainPage(webapp2.RequestHandler):
         name = self.request.get('name')
         kind = self.request.get('kind')
 
-        if kind == 'directory':
+        if kind == 'file':
+            helper.delete_file(name)
+        elif kind == 'directory':
             helper.delete_directory(name)
-
 
     def navigate(self):
         directory_name = self.request.get('directory_name')
@@ -83,5 +91,7 @@ class MainPage(webapp2.RequestHandler):
 # starts the web application and specifies the routing table
 app = webapp2.WSGIApplication(
     [
-        ('/', MainPage)
+        ('/', MainPage),
+        ('/upload', Uploader),
+        ('/download', Downloader)
     ], debug=True)
