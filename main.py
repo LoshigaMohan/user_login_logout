@@ -6,16 +6,17 @@ import helper
 from uploader import Uploader
 from downloader import Downloader
 from google.appengine.ext import blobstore
-
+from errorhandler import Errorhandler
 
 class MainPage(webapp2.RequestHandler):
     # GET-request
+    helper.put_error('')
     def get(self):
         logging.debug('GET')
         self.response.headers['Content-Type'] = 'text/html'
-
         # check whether user is logged in
         if helper.is_user_logged_in():
+
             # if myuser object is None --> No user with key found --> new user --> make new user in datastore
             if not helper.user_exists():
                 helper.add_new_user(helper.get_user())
@@ -28,13 +29,15 @@ class MainPage(webapp2.RequestHandler):
             directories_in_current_path = helper.get_names_from_list(directories_in_current_path)
             files_in_current_path = helper.get_names_from_list(files_in_current_path)
 
+            error_message = helper.get_error().error
             renderhtml.render_main(self,
                                     helper.get_logout_url(self),
                                     directories_in_current_path,
                                     files_in_current_path,
                                     helper.get_current_directory_object().path,
                                     helper.is_in_root_directory(),
-                                    blobstore.create_upload_url('/upload'))
+                                    blobstore.create_upload_url('/upload'),
+                                    error_message)
 
         # no login
         else:

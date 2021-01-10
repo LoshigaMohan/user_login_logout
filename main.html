@@ -105,6 +105,28 @@
 <div class="container-fluid text-center">
   <div class="row content">
     <div class="col-sm-12 text-left">
+
+      {% if error %}
+      <div class="row">
+        <div class="col-sm-4 text-center">
+          </div>
+        <div class="col-sm-4 text-center">
+          <div class="alert alert-danger " id="alert" role="alert">
+            <h4 class="alert-heading">ERROR!</h4>
+            <p>{{ error }}</p>
+          </div>
+        </div>
+        <div class="col-sm-4 text-center">
+          </div>
+      </div>
+      <script>
+          $("#alert").fadeTo(2000, 500).slideUp(500, function() {
+            $("#alert").slideUp(500);
+          });
+      </script>
+
+    {% endif %}
+
       <h1>Welcome To The Dropbox</h1>
       {% if is_not_in_root %}
       <form method="post" action="/">
@@ -177,7 +199,7 @@
               <tr>
                   <!-- icon -->
                   <th class="icon_row">
-                      <b>Folders</b> <i class="material-icons" style="padding-top: 7px; padding-bottom: 7px">folder_open</i>
+                       <i class="material-icons" style="padding-top: 7px; padding-bottom: 7px">folder_open</i>
                   </th>
 
                   <!-- current path -->
@@ -199,7 +221,7 @@
 
                       <!-- directory name + link -->
                       <td class="table_data" colspan="2">
-                            <a href="/?directory_name={{ directory }}" class="table_link">{{ directory }}</a>
+                              <a href="/?directory_name={{ directory }}" class="table_link">{{ directory }}</a>
                       </td>
 
                       <!-- delete button -->

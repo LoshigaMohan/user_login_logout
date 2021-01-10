@@ -3,6 +3,7 @@ from google.appengine.api import users
 from google.appengine.ext import blobstore
 from myuser import MyUser
 from directory import Directory
+from errorhandler import Errorhandler
 from file import File
 import logging
 import re
@@ -10,6 +11,7 @@ import re
 
 # Get user from this page
 def get_user():
+    
     return users.get_current_user()
 
 
@@ -135,6 +137,9 @@ def delete_directory(directory_name):
         # Delete directory object from datastore
         directory_key.delete()
 
+    else:
+        put_error("Directory Not Empty")
+
 
 # checks if a key is in a list of keys, if so returns true
 def exists(key, key_list):
@@ -250,3 +255,19 @@ def delete_file(file_name):
 
     # Delete file object
     file_key.delete()
+
+def put_error(msg):
+    my_user = get_my_user()
+
+    error_id = my_user.key.id()+"Error"
+    errorhandler = Errorhandler(id=error_id)
+    errorhandler.error = msg
+    errorhandler.put()
+
+
+def get_error():
+    my_user = get_my_user()
+
+    error_id = my_user.key.id()+"Error"
+    error_key = ndb.Key(Errorhandler, error_id)
+    return error_key.get()
