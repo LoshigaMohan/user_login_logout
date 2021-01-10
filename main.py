@@ -15,7 +15,7 @@ class MainPage(webapp2.RequestHandler):
             if not helper.user_exists():
                 helper.add_new_user(helper.get_user())
 
-
+            self.navigate()
             # get all directoriesin the current path
             directories_in_current_path = helper.get_directories_in_current_path()
 
@@ -48,6 +48,13 @@ class MainPage(webapp2.RequestHandler):
             self.delete()
             self.redirect('/')
 
+        elif button_value == 'Up':
+            helper.navigate_up()
+            self.redirect('/')
+
+        elif button_value == 'Home':
+            helper.navigate_home()
+            self.redirect('/')
 
     def add(self):
         directory_name = self.request.get('value')
@@ -62,6 +69,14 @@ class MainPage(webapp2.RequestHandler):
         if kind == 'directory':
             helper.delete_directory(name)
 
+
+    def navigate(self):
+        directory_name = self.request.get('directory_name')
+
+        # Navigate to a directory sent in the url via get request
+        if directory_name != '':
+            helper.navigate_to_directory(directory_name)
+            self.redirect('/')
 
 
 

@@ -102,7 +102,7 @@ def add_directory(name, parent_directory_key):
     # check if directory already exists in this path
     if exists(directory.key, parent_directory_object.directories):
         # check if parent directory name and directory name are not same
-        if parent_directory_object.directories != name:
+        if parent_directory_object.name != name:
             # Add key to parent directory
             parent_directory_object.directories.append(directory.key)
             parent_directory_object.put()
@@ -161,3 +161,34 @@ def get_login_url(main_page):
 
 def get_logout_url(main_page):
     return users.create_logout_url(main_page.request.uri)
+
+
+
+
+
+
+def navigate_up():
+    my_user = get_my_user()
+
+    if not is_in_root_directory():
+        parent_directory_key = get_parent_directory_key()
+        my_user.current_directory = parent_directory_key
+        my_user.put()
+
+
+def navigate_home():
+    my_user = get_my_user()
+
+    my_user.current_directory = ndb.Key(Directory, my_user.key.id() + '/')
+    my_user.put()
+
+
+def navigate_to_directory(directory_name):
+    my_user = get_my_user()
+
+    parent_directory_object = get_current_directory_object()
+    directory_id = my_user.key.id() + get_path(directory_name, parent_directory_object)
+    directory_key = ndb.Key(Directory, directory_id)
+
+    my_user.current_directory = directory_key
+    my_user.put()

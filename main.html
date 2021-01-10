@@ -106,6 +106,14 @@
   <div class="row content">
     <div class="col-sm-12 text-left">
       <h1>Welcome To The Dropbox</h1>
+{% if is_not_in_root %}
+      <form method="post" action="/">
+          <input type="hidden" name="button" value="Home">
+          <button class="button" style="padding: 5px; margin-top: 7px" title="Navigate to the root directory.">
+              <i class="material-icons">home</i>  Navigate to the Root Directory
+          </button>
+      </form>
+        {% endif %}
 
       <table>
           <!-- add directory row -->
@@ -132,7 +140,7 @@
               <tr>
                   <!-- icon -->
                   <th class="icon_row">
-                      <b>Folders</b> <i class="material-icons">folder_open</i>
+                      <b>Folders</b>  <i class="material-icons">folder_open</i>
                   </th>
 
                   <!-- current path -->
@@ -172,12 +180,12 @@
                   <tr class="content_table_row">
                       <!-- icon -->
                       <td class="table_data icon_row">
-                               <i class="material-icons">folder</i>
+                              <a href="/?directory_name={{ directory }}"><i class="material-icons"> <i class="material-icons">folder</i></i></a>
                       </td>
 
                       <!-- directory name + link -->
                       <td class="table_data" colspan="2">
-                             {{ directory }}
+                            <a href="/?directory_name={{ directory }}" class="table_link">{{ directory }}</a>
                       </td>
 
                       <!-- delete button -->
