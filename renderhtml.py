@@ -17,7 +17,11 @@ def render_login(self, url):
     self.response.write(template.render(template_values))
 
 
+<<<<<<< HEAD
 def render_main(self, url, directories, files, current_path, is_in_root, upload_url,error,duplicates):
+=======
+def render_main(self, url, directories, files, current_path, is_in_root, upload_url,error):
+>>>>>>> 5c6f47db68a3793896e47a6b5e96ab938ebc09a0
     template_values = {
         'url': url,
         'user': helper.get_user(),
@@ -26,8 +30,12 @@ def render_main(self, url, directories, files, current_path, is_in_root, upload_
         'current_path': current_path,
         'is_not_in_root': not is_in_root,
         'upload_url': upload_url,
+<<<<<<< HEAD
         'error' : error,
         'duplicates' : duplicates
+=======
+        'error' : error
+>>>>>>> 5c6f47db68a3793896e47a6b5e96ab938ebc09a0
     }
 
     template = JINJA_ENVIRONMENT.get_template('/main.html')

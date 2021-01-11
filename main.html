@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<<<<<<< HEAD
 
 <head>
     <title>Dropbox Project</title>
@@ -280,3 +281,284 @@
 </body>
 
 </html>
+=======
+<head>
+  <title>Dropbox Project</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Questrial">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+    /* Remove the navbar's default margin-bottom and rounded borders */
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {height: 450px}
+
+    /* Set gray background color and 100% height */
+    .sidenav {
+      padding-top: 20px;
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+
+    /* Set black background color, white text and some padding */
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {height:auto;}
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        word-break: break-all;
+    }
+
+    th {
+        border-bottom: 1px solid #9c9c9c;
+        border-top: 1px solid #9c9c9c;
+        text-align: left;
+        font-size: 16px;
+        background-color: rgb(217, 226, 230);
+        color: #34393f;
+    }
+
+    td {
+        padding: 0px;
+        border: 0px;
+        margin: 0px;
+    }
+
+    .table_link {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
+    .table_data {
+        border-bottom: 1px solid #c6c6c6;
+    }
+
+    .content_table_row:focus, .content_table_row:hover {
+        background-color: rgb(223, 223, 223);
+    }
+
+    .table_content {
+        margin-bottom: 50px;
+    }
+
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+
+      <a class="navbar-brand" href="#">Dropbox Project</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+
+      <ul class="nav navbar-nav navbar-right">
+        {% if user %}
+        <li><p style="color:white;    margin: 5% 5% 5% 5%;">{{ welcome }} <b>{{ user.email() }}</b></p></li>
+        {% endif %}
+        <li><a href="{{ url }}"><span class="glyphicon glyphicon-log-in"></span>&nbsp;&nbsp;&nbsp;{{ url_string }} </a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid text-center">
+  <div class="row content">
+    <div class="col-sm-12 text-left">
+
+      {% if error %}
+      <div class="row">
+        <div class="col-sm-4 text-center">
+          </div>
+        <div class="col-sm-4 text-center">
+          <div class="alert alert-danger " id="alert" role="alert">
+            <h4 class="alert-heading">ERROR!</h4>
+            <p>{{ error }}</p>
+          </div>
+        </div>
+        <div class="col-sm-4 text-center">
+          </div>
+      </div>
+      <script>
+          $("#alert").fadeTo(2000, 500).slideUp(500, function() {
+            $("#alert").slideUp(500);
+          });
+      </script>
+
+    {% endif %}
+
+      <h1>Welcome To The Dropbox</h1>
+      {% if is_not_in_root %}
+      <form method="post" action="/">
+          <input type="hidden" name="button" value="Home">
+          <button class="button" style="padding: 5px; margin-top: 7px" title="Navigate to the root directory.">
+              <i class="material-icons">home</i>  Navigate to the Root Directory
+          </button>
+      </form>
+        {% endif %}
+
+      <table>
+          <tr>
+              <!-- form for uploading a file to the blobstore -->
+              <form action="{{ upload_url }}" method="post" enctype="multipart/form-data">
+                  <td>
+                      <input type="file" name="file" id="file_upload" class="input_file" multiple>
+                      <label class="file_upload_label" id="file_upload_label" for="file_upload">Choose a file...</label>
+                  </td>
+                  <td class="icon_row">
+                      <button type="submit" class="button" value="Upload">
+                          <i class="material-icons">file_upload</i>
+                      </button>
+                  </td>
+              </form>
+          </tr>
+
+          <tr>
+              <form method="post" action="/">
+                  <td>
+                      <input type="text" class="text_input" name="value" id="text_input"
+                             placeholder="Add a new directory..." style="width: 90%;"/>
+                  </td>
+
+                  <td class="icon_row">
+                      <button type="submit" class="button" name="button" value="Add">
+                          <i class="material-icons">add</i>
+                      </button>
+                  </td>
+              </form>
+          </tr>
+      </table>
+      <br>
+
+      <table class="table_content">
+
+          {% if is_not_in_root %}
+              <tr>
+                  <!-- icon -->
+                  <th class="icon_row">
+                      <b>Folders</b>  <i class="material-icons">folder_open</i>
+                  </th>
+
+                  <!-- current path -->
+                  <th colspan="2">
+                    <b>Current Directory-</b>  {{ current_path }}
+                  </th>
+
+                  <!-- navigate up link -->
+                  <th class="icon_row">
+                      <form method="post" action="/" style="margin: 0px;">
+                          <button type="submit" name="button" class="button_back" value="Up">
+                              <i class="material-icons">keyboard_arrow_left</i>
+                          </button>
+                      </form>
+                  </th>
+
+              </tr>
+
+          {% else %}
+              <tr>
+                  <!-- icon -->
+                  <th class="icon_row">
+                       <i class="material-icons" style="padding-top: 7px; padding-bottom: 7px">folder_open</i>
+                  </th>
+
+                  <!-- current path -->
+                  <th colspan="3">
+                    <b>Current Directory-</b>  {{ current_path }}
+                  </th>
+              </tr>
+          {% endif %}
+
+
+
+          {% if directories %}
+              {% for directory in directories %}
+                  <tr class="content_table_row">
+                      <!-- icon -->
+                      <td class="table_data icon_row">
+                              <a href="/?directory_name={{ directory }}"><i class="material-icons"> <i class="material-icons">folder</i></i></a>
+                      </td>
+
+                      <!-- directory name + link -->
+                      <td class="table_data" colspan="2">
+                              <a href="/?directory_name={{ directory }}" class="table_link">{{ directory }}</a>
+                      </td>
+
+                      <!-- delete button -->
+                      <td class="table_data icon_row">
+                          <form method="post" action="/" style="margin: 0px;">
+                              <input type="hidden" name="name" value="{{ directory }}"/>
+                              <input type="hidden" name="kind" value="directory"/>
+                              <button type="submit" name="button" class="button_delete" value="Delete">
+                                  <i class="material-icons">delete</i>
+                              </button>
+                          </form>
+                      </td>
+
+                  </tr>
+              {% endfor %}
+          {% endif %}
+
+          {% if files %}
+              {% for file in files %}
+                  <tr class="content_table_row">
+                      <!-- icon -->
+                      <td class="table_data icon_row">
+                          <a href="/download?file_name={{ file }}">
+                              <i class="material-icons">insert_drive_file</i>
+                          </a>
+                      </td>
+
+                      <!-- filename + download link -->
+                      <td class="table_data" colspan="2">
+                          <a href="/download?file_name={{ file }}" class="table_link">
+                              {{ file }}
+                          </a>
+                      </td>
+
+                      <!-- delete button -->
+                      <td class="table_data icon_row">
+                          <form method="post" action="/" style="margin: 0px;">
+                              <input type="hidden" name="name" value="{{ file }}"/>
+                              <input type="hidden" name="kind" value="file"/>
+                              <button type="submit" name="button" class="button_delete" value="Delete">
+                                  <i class="material-icons">delete</i>
+                              </button>
+                          </form>
+                      </td>
+
+                  </tr>
+              {% endfor %}
+          {% endif %}
+      </table>
+    </div>
+
+  </div>
+</div>
+
+
+</body>
+</html>
+>>>>>>> 5c6f47db68a3793896e47a6b5e96ab938ebc09a0
