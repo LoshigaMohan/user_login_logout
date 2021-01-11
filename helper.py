@@ -285,3 +285,47 @@ def get_duplicate_names_from_list(elements):
             duplicates = set(dupes)
 
     return duplicates
+
+
+def get_root_directory_key():
+    my_user = get_my_user()
+    root_directory_id = my_user.key.id() + '/'
+    root_directory_key = ndb.Key(Directory, root_directory_id)
+    return root_directory_key
+
+def get_root_directory_object():
+    return get_root_directory_key().get()
+
+def get_directories_in_root():
+    return get_root_directory_object().directories
+
+def get_files_in_root():
+    return get_root_directory_object().files
+
+
+def get_duplicate_names_from_dropbox():
+    a_dict = dict()
+    my_user = get_my_user()
+    root_directories = get_directories_in_root()
+    root_directory_name = get_names_from_list(root_directories)
+
+    
+ 
+    for directory_name in root_directory_name:
+        directory_id = my_user.key.id() + directory_name
+        directory_key = ndb.Key(Directory, directory_id)
+ 
+    
+    add_values_in_dict(a_dict, 'John', [20, 21])
+    add_values_in_dict(a_dict, 'Johny', [2, 1])
+
+    #return root_directory_name
+    return a_dict
+
+
+def add_values_in_dict(sample_dict, key, list_of_values):
+        """Append multiple values to a key in the given dictionary"""
+        if key not in sample_dict:
+            sample_dict[key] = list()
+        sample_dict[key].extend(list_of_values)
+        return sample_dict

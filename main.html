@@ -278,13 +278,16 @@
             <table class="table_content">
                 {% if duplicates %} {% for duplicate in duplicates %}
                 <tr class="content_table_row">
-                    <td>{{ duplicate }} </td>
+                    <td>
+                        <h4>{{ duplicate }}</h4>
+                    </td>
                 </tr>
                 {% endfor %} {% endif %}
             </table>
         </div>
     </div>
 
+    {% for i in duplicates_dropbox %} {{duplicates_dropbox[i]}} {% endfor %}
 
 </body>
 

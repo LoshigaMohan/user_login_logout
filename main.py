@@ -40,7 +40,8 @@ class MainPage(webapp2.RequestHandler):
                                     helper.is_in_root_directory(),
                                     blobstore.create_upload_url('/upload'),
                                     error_message,
-                                    duplicate_files_in_current_path)
+                                    duplicate_files_in_current_path,
+                                    helper.get_duplicate_names_from_dropbox())
 
         # no login
         else:
