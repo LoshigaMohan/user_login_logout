@@ -9,7 +9,7 @@ from google.appengine.ext import blobstore
 from errorhandler import Errorhandler
 
 class MainPage(webapp2.RequestHandler):
-    # GET-request
+    
     helper.put_error('')
     def get(self):
         logging.debug('GET')
