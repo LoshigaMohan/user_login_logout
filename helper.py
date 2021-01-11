@@ -224,7 +224,6 @@ def add_file(upload, file_name):
     file_id = my_user.key.id() + get_path(file_name, current_directory_object)
     file_key = ndb.Key(File, file_id)
 
-<<<<<<< HEAD
     #if exists(file_key, current_directory_object.files):
     file_object = File(id=file_id)
     file_object.name = file_name
@@ -238,21 +237,6 @@ def add_file(upload, file_name):
         # Delete uploaded file from the blobstore
   #      blobstore.delete(upload.key())
   #      logging.debug("A file with this name already exists in this directory!")
-=======
-    if exists(file_key, current_directory_object.files):
-        file_object = File(id=file_id)
-        file_object.name = file_name
-        file_object.blob = upload.key()
-        file_object.put()
-
-        current_directory_object.files.append(file_key)
-        current_directory_object.put()
-
-    else:
-        # Delete uploaded file from the blobstore
-        blobstore.delete(upload.key())
-        logging.debug("A file with this name already exists in this directory!")
->>>>>>> 5c6f47db68a3793896e47a6b5e96ab938ebc09a0
 
 def delete_file(file_name):
     my_user = get_my_user()
@@ -287,18 +271,17 @@ def get_error():
     error_id = my_user.key.id()+"Error"
     error_key = ndb.Key(Errorhandler, error_id)
     return error_key.get()
-<<<<<<< HEAD
 
 
 
 
 def get_duplicate_names_from_list(elements):
     dupes = list()
+    duplicates = list()
     
     for i in range(len(elements)): 
         if (elements.count(elements[i]) > 1 ): 
             dupes.append(elements[i]) 
+            duplicates = set(dupes)
 
-    return dupes
-=======
->>>>>>> 5c6f47db68a3793896e47a6b5e96ab938ebc09a0
+    return duplicates

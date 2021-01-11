@@ -9,11 +9,7 @@ from google.appengine.ext import blobstore
 from errorhandler import Errorhandler
 
 class MainPage(webapp2.RequestHandler):
-<<<<<<< HEAD
-    
-=======
     # GET-request
->>>>>>> 5c6f47db68a3793896e47a6b5e96ab938ebc09a0
     helper.put_error('')
     def get(self):
         logging.debug('GET')
@@ -33,11 +29,8 @@ class MainPage(webapp2.RequestHandler):
             directories_in_current_path = helper.get_names_from_list(directories_in_current_path)
             files_in_current_path = helper.get_names_from_list(files_in_current_path)
 
-<<<<<<< HEAD
             duplicate_files_in_current_path = helper.get_duplicate_names_from_list(files_in_current_path)
 
-=======
->>>>>>> 5c6f47db68a3793896e47a6b5e96ab938ebc09a0
             error_message = helper.get_error().error
             renderhtml.render_main(self,
                                     helper.get_logout_url(self),
@@ -46,12 +39,8 @@ class MainPage(webapp2.RequestHandler):
                                     helper.get_current_directory_object().path,
                                     helper.is_in_root_directory(),
                                     blobstore.create_upload_url('/upload'),
-<<<<<<< HEAD
                                     error_message,
                                     duplicate_files_in_current_path)
-=======
-                                    error_message)
->>>>>>> 5c6f47db68a3793896e47a6b5e96ab938ebc09a0
 
         # no login
         else:
