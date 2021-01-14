@@ -11,7 +11,6 @@ import re
 
 # Get user from this page
 def get_user():
-    
     return users.get_current_user()
 
 
@@ -128,6 +127,7 @@ def delete_directory(directory_name):
     directory_key = ndb.Key(Directory, directory_id)
     directory_object = directory_key.get()
 
+   
     if is_directory_empty(directory_object):
 
         # Delete reference to this object from parent_directory
@@ -136,10 +136,8 @@ def delete_directory(directory_name):
 
         # Delete directory object from datastore
         directory_key.delete()
-
     else:
         put_error("Directory Not Empty")
-
 
 # checks if a key is in a list of keys, if so returns true
 def exists(key, key_list):
@@ -224,7 +222,7 @@ def add_file(upload, file_name):
     file_id = my_user.key.id() + get_path(file_name, current_directory_object)
     file_key = ndb.Key(File, file_id)
 
-    #if exists(file_key, current_directory_object.files):
+    
     file_object = File(id=file_id)
     file_object.name = file_name
     file_object.blob = upload.key()
@@ -233,10 +231,7 @@ def add_file(upload, file_name):
     current_directory_object.files.append(file_key)
     current_directory_object.put()
 
-  #  else:
-        # Delete uploaded file from the blobstore
-  #      blobstore.delete(upload.key())
-  #      logging.debug("A file with this name already exists in this directory!")
+
 
 def delete_file(file_name):
     my_user = get_my_user()
@@ -272,9 +267,6 @@ def get_error():
     error_key = ndb.Key(Errorhandler, error_id)
     return error_key.get()
 
-
-
-
 def get_duplicate_names_from_list(elements):
     dupes = list()
     duplicates = list()
@@ -286,46 +278,45 @@ def get_duplicate_names_from_list(elements):
 
     return duplicates
 
-
-def get_root_directory_key():
-    my_user = get_my_user()
-    root_directory_id = my_user.key.id() + '/'
-    root_directory_key = ndb.Key(Directory, root_directory_id)
-    return root_directory_key
-
-def get_root_directory_object():
-    return get_root_directory_key().get()
-
-def get_directories_in_root():
-    return get_root_directory_object().directories
-
-def get_files_in_root():
-    return get_root_directory_object().files
-
-
 def get_duplicate_names_from_dropbox():
-    a_dict = dict()
     my_user = get_my_user()
-    root_directories = get_directories_in_root()
-    root_directory_name = get_names_from_list(root_directories)
+    dupes = list()
+    paths = list()
+    current_path = '/'
+    directoryId = my_user.key.id() + current_path
+    my_user.current = ndb.Key(Directory, directoryId)
+    my_user.put()
+    sortedFiles = sorted(get_my_user().current.get().files, key=lambda element: element.
+                                 get().name.lower())
+    files_in_current_path = [element.get().name for element in sortedFiles]
 
     
- 
-    for directory_name in root_directory_name:
-        directory_id = my_user.key.id() + directory_name
-        directory_key = ndb.Key(Directory, directory_id)
- 
+    for i in range(len(files_in_current_path)): 
+        if (files_in_current_path.count(files_in_current_path[i]) > 1 ): 
+            dupes.append(files_in_current_path[i]) 
+            paths.append(current_path)
+            
+
+
+    sortedDir = sorted(get_my_user().current.get().directories,
+                               key=lambda element: element.get().name.lower())
+    directories_in_current_path = [element.get().name for element in sortedDir]
     
-    add_values_in_dict(a_dict, 'John', [20, 21])
-    add_values_in_dict(a_dict, 'Johny', [2, 1])
+    for directoryName in directories_in_current_path: 
+        current_path =  get_path(directoryName, get_my_user().current.get())
+        directoryId = my_user.key.id() + current_path
+        my_user.current = ndb.Key(Directory, directoryId)
+        my_user.put()
+        sortedFiles = sorted(get_my_user().current.get().files, key=lambda element: element.
+                                 get().name.lower())
+        files_in_current_path = [element.get().name for element in sortedFiles]
 
-    #return root_directory_name
-    return a_dict
+        
+        for i in range(len(files_in_current_path)): 
+            if (files_in_current_path.count(files_in_current_path[i]) > 1 ): 
+                dupes.append(files_in_current_path[i]) 
+                paths.append(current_path)
 
-
-def add_values_in_dict(sample_dict, key, list_of_values):
-        """Append multiple values to a key in the given dictionary"""
-        if key not in sample_dict:
-            sample_dict[key] = list()
-        sample_dict[key].extend(list_of_values)
-        return sample_dict
+    return (dupes,paths)
+    
+    

@@ -17,7 +17,7 @@ def render_login(self, url):
     self.response.write(template.render(template_values))
 
 
-def render_main(self, url, directories, files, current_path, is_in_root, upload_url,error,duplicates,duplicates_dropbox):
+def render_main(self, url, directories, files, current_path, is_in_root, upload_url,error,duplicates,duplicate_files_in_dropox):
     template_values = {
         'url': url,
         'user': helper.get_user(),
@@ -28,8 +28,8 @@ def render_main(self, url, directories, files, current_path, is_in_root, upload_
         'upload_url': upload_url,
         'error' : error,
         'duplicates' : duplicates,
-        'duplicates_dropbox' : duplicates_dropbox
-    }
+        'duplicateDropox' : duplicate_files_in_dropox
+            }
 
     template = JINJA_ENVIRONMENT.get_template('/main.html')
     self.response.write(template.render(template_values))
