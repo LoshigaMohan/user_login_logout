@@ -1,0 +1,57 @@
+<html>
+  <head>
+        <meta charset="utf-8"/>
+        <title>Login </title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Questrial">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Questrial">
+        <style media="screen">
+          .header_login {
+              background-color: #34393f;
+              text-align: center;
+              font-size: 50px;
+              color: #f4fcff;
+              margin: auto;
+              width: 30%;
+              overflow: hidden;
+              border: 0.5px solid #434647;
+              padding: 15px;
+              box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+              top: 0px;
+          }
+
+          .content_login {
+              font-size: 20px;
+              background-color: #efefef;
+              margin: auto;
+              margin-top: 2px;
+              margin-bottom: 2px;
+              width: 30%;
+              padding: 10px;
+              min-height: 27%;
+              box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+          }
+        </style>
+  </head>
+
+  <body>
+    <div style="margin: 15% auto; text-align:center" >
+        <div class="header_login">
+            Dropbox
+        </div>
+        <div class="content_login" style="text-align:center">
+            <p>You are not logged in.<br> Please login first.</p>
+            <br>
+            <br>
+            <a href="{{ url }}">
+                <div class="button_element_login">
+                    Login
+                </div>
+            </a>
+        </div>
+    </div>
+  </body>
+</html>
